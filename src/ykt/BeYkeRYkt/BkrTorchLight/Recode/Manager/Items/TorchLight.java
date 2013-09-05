@@ -114,5 +114,10 @@ this.enable = enable;
 	public boolean isEnabled() {
 		return this.enable;
 	}
+
+	@Override
+	public String getName() {
+		return this.name;
+	}
 	
 }

@@ -106,4 +106,10 @@ public class HeadLamp implements ItemType{
 this.enable = enable;
 		
 	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return this.name;
+	}
 }

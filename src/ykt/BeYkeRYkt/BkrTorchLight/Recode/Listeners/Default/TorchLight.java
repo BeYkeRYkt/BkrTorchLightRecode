@@ -1,11 +1,16 @@
 package ykt.BeYkeRYkt.BkrTorchLight.Recode.Listeners.Default;
 
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,6 +37,8 @@ public Location fromPlayerLocation;
 public ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.ItemLightManager light = new ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.ItemLightManager();
 private ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.Items.TorchLight tl = new ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.Items.TorchLight();
 
+
+
 public TorchLight(BTL instance)
 {
   this.plugin = instance;
@@ -43,6 +50,35 @@ Player player = event.getEntity();
 Location l = player.getLocation();
 			light.removeLight(l, tl, player);
     }
+
+@EventHandler
+public void onFakeDamage(PlayerInteractEvent event){
+	Player player = event.getPlayer();
+	List<Entity> entities = player.getNearbyEntities(3,3,3);
+
+	if ((event.getAction() == (Action.LEFT_CLICK_AIR))) {
+    	if(!player.isSneaking()){
+    	if(plugin.isUsing.contains(player) || plugin.isHelmetUse.contains(player)){
+    		for(Entity entity : entities){
+    			if (entity instanceof LivingEntity)
+                {	
+                    LivingEntity lentity = (LivingEntity) entity;
+                    lentity.damage(4);
+                }else
+    			if(entity instanceof Monster){
+    				Monster zombie = (Monster) entity;
+                    zombie.setTarget(player);
+                    zombie.damage(4);
+    			}else
+    			if(entity instanceof Player){
+    				Player pentity = (Player) entity;
+    				pentity.damage(4);
+    			}
+    		}
+    		}
+    	}
+    	}
+}
 
 
 @EventHandler

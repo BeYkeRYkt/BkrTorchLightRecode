@@ -374,4 +374,10 @@ public class FlashLight implements ItemType{
 		
 	}
 
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return this.name;
+	}
+
 	  }

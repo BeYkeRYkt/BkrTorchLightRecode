@@ -9,22 +9,18 @@ import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import ykt.BeYkeRYkt.BkrTorchLight.Recode.Listeners.Default.TorchLight;
 import ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.ItemLightManager;
@@ -44,6 +40,7 @@ public class BTL extends JavaPlugin{
 	private ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.Items.HeadLamp head = new HeadLamp();
 	  private ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.Items.TorchLight tl = new ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.Items.TorchLight();
 	  private ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.ItemLightManager ilm = new ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.ItemLightManager();
+	  
     public void onDisable()
     {
       PluginDescriptionFile pdfFile = getDescription();
@@ -57,9 +54,12 @@ public class BTL extends JavaPlugin{
   		  }
     }
 	
-	
+	public void registerListener(Listener listener){
+		Bukkit.getServer().getPluginManager().registerEvents(listener, this);
+	}
+    
 	public void onEnable()
-	  {
+	  {		
 		try {
 		    Metrics metrics = new Metrics(this);
 		    metrics.start();
@@ -96,13 +96,10 @@ public class BTL extends JavaPlugin{
         
         if(ilm.isEnabled(tl)){
 	    getServer().getPluginManager().registerEvents(playerListener, this);
-	    getLogger().info(tl.name +" Enabled...");
         } if(ilm.isEnabled(head)){
 	    getServer().getPluginManager().registerEvents(new ykt.BeYkeRYkt.BkrTorchLight.Recode.Listeners.Default.HeadLamp(this), this);
-	    getLogger().info(head.name +" Enabled...");
         } if(ilm.isEnabled(flash)){
 	    getServer().getPluginManager().registerEvents(new ykt.BeYkeRYkt.BkrTorchLight.Recode.Listeners.Default.FlashLight(this), this);
-	    getLogger().info(flash.name +" Enabled...");
         }
 		
 		//Config
@@ -113,9 +110,8 @@ public class BTL extends JavaPlugin{
 			FileConfiguration fc = getConfig();
 			if (!new File(getDataFolder(), "config.yml").exists()) {
 				fc.options().header("BkrTorchLight v" + pdFile.getVersion() + " Configuration" + 
-						"\nby It's Hard :D" +
+						"\nIt's Hard :D" +
 					"\nby BeYkeRYkt");
-				fc.addDefault("light", "DEFAULT");
 				fc.addDefault("message-torch-enable", true);
 				fc.addDefault("message-headlamp-enable", true);
 				fc.addDefault("flashlight-enable", true);
