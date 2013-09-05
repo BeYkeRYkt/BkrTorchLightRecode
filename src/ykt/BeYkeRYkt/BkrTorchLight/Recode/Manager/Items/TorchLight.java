@@ -1,4 +1,4 @@
-package ykt.BeYkeRYkt.BkrTorchLight.Recode.Items;
+package ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.Items;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +15,20 @@ import org.bukkit.entity.Player;
 
 import ykt.BeYkeRYkt.BkrTorchLight.Recode.BTL;
 import ykt.BeYkeRYkt.BkrTorchLight.Recode.Chunks;
+import ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.ItemType;
 
-public class TorchLight {
-	private static BTL plugin;
+public class TorchLight implements ItemType{
+	private BTL plugin;
+	public String name = "TorchLight";
+	public boolean enable;
+	
 	  //Light
-	  public static void createLightSource(Location toPlayerLocation, Player player, int level)
+	
+	public TorchLight(){
+	}
+	
+	@Override
+	public void createLightSource(Location toPlayerLocation, Player player, int level)
 	  {
 	    CraftWorld cWorld = (CraftWorld)toPlayerLocation.getWorld();    
 	    int xNew = toPlayerLocation.getBlockX();
@@ -36,10 +45,10 @@ public class TorchLight {
 	    byte blockData = newSource.getBlock().getData();
 	    newSource.getBlock().setType(blockMaterial);
 	    newSource.getBlock().setData(blockData);
-	    	Chunks.updateChunk(cWorld.getHandle(),player, "CREATE");
+	    	Chunks.sendClientChanges();
 	}
-
-	  public static void createLightSource(Player player, int level)
+	@Override
+	  public void createLightSource(Player player, int level)
 	  {
 	    CraftWorld cWorld = (CraftWorld)player.getWorld();
 	    Location playerLocation = player.getLocation().getBlock().getLocation();
@@ -57,11 +66,11 @@ public class TorchLight {
 	    byte blockData = newSource.getBlock().getData();
 	    newSource.getBlock().setType(blockMaterial);
 	    newSource.getBlock().setData(blockData);
-	    Chunks.updateChunk(cWorld.getHandle(),player, "CREATE");
+	    Chunks.sendClientChanges();
 	  }
 	  
-	  
-	  public static void deleteLightSource(Location fromPlayerLocation, Player player)
+	@Override
+	  public void deleteLightSource(Location fromPlayerLocation, Player player)
 	  {
 	    CraftWorld cWorld = (CraftWorld)fromPlayerLocation.getWorld();
 
@@ -74,10 +83,11 @@ public class TorchLight {
 	    byte blockData = previousSource.getBlock().getData();
 	    previousSource.getBlock().setType(blockMaterial);
 	    previousSource.getBlock().setData(blockData); 
-	    Chunks.updateChunk(cWorld.getHandle(), player, "REMOVE");
+	    Chunks.sendClientChanges();
 	  }
-	  
-	  public static void deleteLightSource(Player player)
+	
+	@Override
+	  public void deleteLightSource(Player player)
 	  {
 	    CraftWorld cWorld = (CraftWorld)player.getWorld();
 	    Location playerLocation = player.getLocation().getBlock().getLocation();
@@ -91,6 +101,18 @@ public class TorchLight {
 	      byte blockData = previousSource.getBlock().getData();
 	      previousSource.getBlock().setType(blockMaterial);
 	      previousSource.getBlock().setData(blockData);
-	      Chunks.updateChunk(cWorld.getHandle(),player, "REMOVE");
+	      Chunks.sendClientChanges();
 	    }
+
+	@Override
+	public void setEnabled(boolean enable) {
+this.enable = enable;
+		
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return this.enable;
+	}
+	
 }

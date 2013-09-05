@@ -236,7 +236,7 @@ public class Chunks {
 
 	  }
 	
-	//Default
+	//Old Chunk update
 	public static List<Chunk> getChunks(Player p) {
 
 		List<Chunk> res = new ArrayList<Chunk>();
@@ -263,42 +263,34 @@ public class Chunks {
 		res.add((Chunk) diag4.getChunk());
 		return res;
 	}
-	
-	public static void updateChunk(WorldServer nmsWorld, Player player, String string) {
+
+	public static void sendClientChanges() {
 		 for (Player p : Bukkit.getOnlinePlayers()){
-			 Location loc = player.getLocation();
-				for (Chunk c : getChunks(p)) {
-					try {
-
-						PlayerChunkMap map = nmsWorld.getPlayerChunkMap();
-
-						IWorldAccess access = countLightUpdates(loc.getWorld(), map);
-
-						nmsWorld.addIWorldAccess(access);
-
-						// Update the light itself
-
-						Block adjacent = getAdjacentAirBlock(loc.getBlock());
-
-						nmsWorld.A(adjacent.getX(), adjacent.getY(), adjacent.getZ());
-						
-						Field field = World.class.getDeclaredField("u");
-
-						field.setAccessible(true);
-
-						((List) field.get(nmsWorld)).remove(access);
-
-						} catch (SecurityException e) {
-
-						throw new RuntimeException("Access denied", e);
-
-						} catch (ReflectiveOperationException e) {
-
-						throw new RuntimeException("Reflection problem.", e);
-
-						}
-				}
+		List<ChunkCoordIntPair> pairs = new ArrayList<ChunkCoordIntPair>();
+		for (Chunk c : getChunks(p)) {
+			pairs.add(new ChunkCoordIntPair(c.getX(), c.getZ()));
+		}
+		EntityPlayer ep = ((CraftPlayer) p).getHandle();
+		queueChunks(ep, pairs);
+       
 		 }
-				}
-		 
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	private static void queueChunks(EntityPlayer ep, List<ChunkCoordIntPair> pairs) {
+		 for (Player p : Bukkit.getOnlinePlayers()){
+		Set<ChunkCoordIntPair> queued = new HashSet<ChunkCoordIntPair>();
+		for (Object o : ep.chunkCoordIntPairQueue) {
+			queued.add((ChunkCoordIntPair) o);
+		}
+		for (ChunkCoordIntPair pair : pairs) {
+			if (!queued.contains(pair)) {
+				ep.chunkCoordIntPairQueue.add(pair);
+			}
+		}
+	}
+}
+
+	//Chunk Server
+	
 }

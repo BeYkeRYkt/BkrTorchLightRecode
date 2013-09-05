@@ -1,4 +1,4 @@
-package ykt.BeYkeRYkt.BkrTorchLight.Recode.Items;
+package ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.Items;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -24,11 +24,17 @@ import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-public class FlashLight {
+import ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.ItemType;
+
+public class FlashLight implements ItemType{
 	  //Light
 	private static Method cachedPlayerChunk;
 
 	private static Field cachedDirtyField;
+	
+	public String name = "FlashLight";
+	
+	public boolean enable;
 	
 	private static BlockFace[] SIDES = {
 
@@ -36,7 +42,7 @@ public class FlashLight {
 
 		BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
 	
-	  public static void createLightSource(Location toPlayerLocation, Player player, int level)
+	  public void createLightSource(Location toPlayerLocation, Player player, int level)
 	  {
 	    CraftWorld cWorld = (CraftWorld)toPlayerLocation.getWorld();    
 	    int xNew = toPlayerLocation.getBlockX();
@@ -338,5 +344,34 @@ public class FlashLight {
 	  return cachedDirtyField;
 
 	  }
+
+	@Override
+	public void createLightSource(Player player, int level) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteLightSource(Location fromPlayerLocation, Player player) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteLightSource(Player player) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return this.enable;
+	}
+
+	@Override
+	public void setEnabled(boolean enable) {
+		this.enable = enable;
+		
+	}
 
 	  }

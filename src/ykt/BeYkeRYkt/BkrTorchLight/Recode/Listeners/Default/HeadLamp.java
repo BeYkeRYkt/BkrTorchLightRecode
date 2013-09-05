@@ -15,13 +15,16 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import ykt.BeYkeRYkt.BkrTorchLight.Recode.BTL;
+import ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.ItemLightManager;
 
 public class HeadLamp implements Listener {
 
 	private BTL plugin;
 	public Location toPlayerLocation;
 	public Location fromPlayerLocation;
-	public ykt.BeYkeRYkt.BkrTorchLight.Recode.Items.HeadLamp lamp;
+	public ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.ItemLightManager lamp = new ItemLightManager();
+	
+public ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.Items.HeadLamp hl = new ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.Items.HeadLamp();
 
     public HeadLamp(BTL instance)
     {
@@ -32,29 +35,28 @@ public class HeadLamp implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
     Player player = event.getEntity();
     Location l = player.getLocation();
-    			lamp.deleteLightSource(l, player);
-        }
-
+    			lamp.removeLight(l, hl, player);
+    }
     
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
     Player player = event.getPlayer();
     Location l = player.getLocation();
-    			lamp.deleteLightSource(l, player);
+    			lamp.removeLight(l, hl, player);
         }
 
     @EventHandler
     public void onPlayerChangeWorlds(PlayerChangedWorldEvent event) {
     	Player player = event.getPlayer();
         Location l = player.getLocation();
-    	lamp.deleteLightSource(l, player);
+    	lamp.removeLight(l, hl, player);
     }
     
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         Location l = player.getLocation();
-        lamp.deleteLightSource(l, player);
+        lamp.removeLight(l, hl, player);
     	plugin.isHelmetUse.remove(event.getPlayer());
     }
     
@@ -69,13 +71,13 @@ public class HeadLamp implements Listener {
         	if (plugin.getConfig().getBoolean("Worlds." + ((Player)player).getWorld().getName()) || ((Player)player).getPlayer().isOp()) {
     			if (!plugin.isHelmetUse.contains(player)) {
     				plugin.isHelmetUse.add((Player)player);
-    				lamp.createLightSource(player, plugin.isHelmetLight(event.getPlayer().getInventory().getArmorContents()[3].getTypeId()));
+    				lamp.createLight(hl, player, plugin.isHelmetLight(event.getPlayer().getInventory().getArmorContents()[3].getTypeId()));
     				if(plugin.getConfig().getBoolean("message-headlamp-enable", true)) {
     				player.sendMessage(ChatColor.GRAY + plugin.getConfig().getString("HeadLamp.activate"));
     				}
     			} else {
     				if (plugin.isHelmet(event.getPlayer().getInventory().getArmorContents()[3].getTypeId())){
-    					lamp.deleteLightSource(player);
+    					lamp.removeLight(hl, player);
     				}
     				plugin.isHelmetUse.remove(player);
     				if(plugin.getConfig().getBoolean("message-torch-enable", true)) {
@@ -91,7 +93,7 @@ public class HeadLamp implements Listener {
         }
         }
         }
-        }
+    }
     
     
     @EventHandler
@@ -104,14 +106,14 @@ public class HeadLamp implements Listener {
     				    if (plugin.isHelmetUse.contains(event.getPlayer())) {
     				    
 				if (plugin.isHelmet(event.getPlayer().getInventory().getArmorContents()[3].getTypeId())) {
-                lamp.deleteLightSource(this.fromPlayerLocation, player);
-                lamp.createLightSource(this.toPlayerLocation, player, plugin.isHelmetLight(event.getPlayer().getInventory().getArmorContents()[3].getTypeId()));
+                lamp.removeLight(this.fromPlayerLocation, hl, player);
+                lamp.createLight(this.toPlayerLocation, hl,player, plugin.isHelmetLight(event.getPlayer().getInventory().getArmorContents()[3].getTypeId()));
 		
             }else{
-            lamp.deleteLightSource(this.toPlayerLocation, player);
+            lamp.removeLight(this.toPlayerLocation, hl, player);
             }
     		}
-}
         }
+    	}
     }
 }
