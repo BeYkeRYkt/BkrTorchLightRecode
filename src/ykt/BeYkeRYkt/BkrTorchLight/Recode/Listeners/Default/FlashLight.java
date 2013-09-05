@@ -21,7 +21,7 @@ public class FlashLight implements Listener{
 	
 	public BTL plugin;
 
-	public ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.Items.FlashLight flash;
+	public ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.Items.FlashLight flash = new ykt.BeYkeRYkt.BkrTorchLight.Recode.Manager.Items.FlashLight();
 	
 	public FlashLight(BTL instance)
 	{
